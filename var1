@@ -1,0 +1,43 @@
+ArrayList<PVector> spheres;
+float radious = 20;
+
+void setup(){
+  size(500, 500, P3D);
+  noStroke();
+  spheres = new ArrayList<PVector>();
+  spheres.add(new PVector(0, 0, 0));
+}
+
+void draw(){
+  background(64); 
+  lights(); 
+  translate(width / 2, height / 2, 0);
+  rotateX(frameCount * 0.01);
+  rotateY(frameCount * 0.02);
+  rotateZ(frameCount * 0.03);
+  for(PVector s: spheres){
+    pushMatrix();
+    translate(s.x, s.y, s.z);
+    sphere(radious);
+    popMatrix();
+  }
+  
+  PVector neighbor = spheres.get(int(random(spheres.size())));
+  float rad1 = random(TWO_PI);
+  float rad2 = random(PI);
+  float x = neighbor.x + radious * 2 * sin(rad2) * cos(rad1);
+  float y = neighbor.y + radious * 2 * sin(rad2) * sin(rad1);
+  float z = neighbor.z + radious * 2 * cos(rad2);
+  PVector newSphere = new PVector(x, y, z);
+  boolean isOverlapping = false;
+  for(PVector s: spheres){
+    if(PVector.dist(s, newSphere) < radious * 2){
+      isOverlapping = true;
+      break;
+    }
+  }
+  if(!isOverlapping){
+    spheres.add(newSphere);
+  }
+}
+
